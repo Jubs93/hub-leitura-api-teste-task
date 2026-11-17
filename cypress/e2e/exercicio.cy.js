@@ -26,36 +26,14 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
 
   // Objetivo: Validar que é possível obter detalhes de um livro específico pelo ID
   // Verificar que todos os campos do livro são retornados corretamente
-  it("GET - Deve obter detalhes de um livro específico", () => {
+  it.only("GET - Deve obter detalhes de um livro específico", () => {
     cy.api({
       method: "GET",
-      url: "books",
+      url: "books/1",
       headers: { Authorization: token },
-      qs: {
-        search: "1984",
-        category: "Ficção",
-        author: "George Orwell",
-        available: "true",
-        limit: 20,
-        offset: 0,
-        orderBy: "Dom Casmurro",
-        order: "ASC",
-      },
-    }).should((response) => {
+          }).should((response) => {
       expect(response.status).to.equal(200);
-
-      const livros = response.body.books || response.body;
-
-      expect(livros).to.be.an("array").and.not.be.empty;
-      expect(livros.length).to.be.at.most(20);
-
-      livros.forEach((livro) => {
-        expect(livro).to.have.property("id");
-        expect(livro).to.have.property("title").and.not.be.empty;
-        expect(livro.category).to.equal("Ficção");
-        expect(livro.author).to.equal("George Orwell");
-        expect(livro.available_copies).to.be.greaterThan(0);
-      });
+      expect(response.body.book.title).to.equal('Dom Casmurro')
     });
   });
 
@@ -130,7 +108,7 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
 
   // Objetivo: Validar que um livro pode ser removido do catálogo
   // Verificar que apenas admin pode deletar livros (validação de permissão)
-  it.only("DELETE - Deve deletar um livro previamente cadastrado", () => {
+  it("DELETE - Deve deletar um livro previamente cadastrado", () => {
     let titulo = `Ju teste ${Date.now()}`;
     cy.cadastrarLivro(token,titulo, "Juliana Azevedo", "Ficção", 6).then(
       (idLivro) => {
