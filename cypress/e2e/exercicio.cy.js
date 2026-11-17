@@ -26,7 +26,7 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
 
   // Objetivo: Validar que é possível obter detalhes de um livro específico pelo ID
   // Verificar que todos os campos do livro são retornados corretamente
-  it.only("GET - Deve obter detalhes de um livro específico", () => {
+  it("GET - Deve obter detalhes de um livro específico", () => {
     cy.api({
       method: "GET",
       url: "books/1",
