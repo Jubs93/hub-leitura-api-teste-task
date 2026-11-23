@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('geraToken', (email, senha) => {
-    cy.request({
+    cy.api({
         method: 'POST', 
         url: 'login', 
         body: {
@@ -54,7 +54,7 @@ Cypress.Commands.add('geraToken', (email, senha) => {
  })
 
 Cypress.Commands.add('cadastrarLivro', (token, titulo, autor, categoria, copias) => {
-  cy.api({
+  cy.request({
     method: 'POST',
     url: 'books',
     headers: { 'Authorization': token },

@@ -20,7 +20,8 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
         author: "Anne Frank",
       },
     }).should((response) => {
-      expect(response.status).to.equal(200);
+      expect(response.status).to.equal(200); 
+      expect(response.body.books[0].category).to.equal('Biografia')
     });
   });
 
@@ -34,7 +35,7 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
           }).should((response) => {
       expect(response.status).to.equal(200);
       expect(response.body.book.title).to.equal('Dom Casmurro')
-    });
+     });
   });
 
   // Objetivo: Validar que um novo livro é adicionado com sucesso ao catálogo
@@ -61,6 +62,9 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
       },
     }).should((response) => {
       expect(response.status).to.equal(201);
+      expect(response.body.message).to.equal('Livro criado com sucesso.');
+      expect(response.body.book).to.have.property('id');
+      expect(response.body.book.title).to.eq(titulo);
     });
   });
 
@@ -94,13 +98,14 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
           url:`books/${idLivro}`,
           headers: { Authorization: token },
           body: {
-            title: titulo + "alterado",
+            title: titulo + " alterado",
             author: "Juliana Azevedo Alterado",
             category: "Literatura Brasileira",
             total_copies: 2,
           },
         }).should((response) => {
           expect(response.status).to.equal(200);
+          expect(response.body.updatedFields).to.include('title');
         });
       },
     );
@@ -108,7 +113,7 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
 
   // Objetivo: Validar que um livro pode ser removido do catálogo
   // Verificar que apenas admin pode deletar livros (validação de permissão)
-  it("DELETE - Deve deletar um livro previamente cadastrado", () => {
+  it.only("DELETE - Deve deletar um livro previamente cadastrado", () => {
     let titulo = `Ju teste ${Date.now()}`;
     cy.cadastrarLivro(token,titulo, "Juliana Azevedo", "Ficção", 6).then(
       (idLivro) => {
@@ -118,6 +123,15 @@ describe("Testes da Funcionalidade Catálogo de Livros", () => {
           headers: { Authorization: token },
         }).should((response) => {
           expect(response.status).to.equal(200);
+        })
+        .then(() => {
+          cy.api({
+            method: "GET",
+            url: `books/${idLivro}`,
+            failOnStatusCode: false,
+          }).should((getResponse) => {
+            expect(getResponse.status).to.equal(404);
+          });
         });
       },
     );

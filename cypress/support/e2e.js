@@ -15,4 +15,5 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+window.process = { env: { NODE_ENV: 'development' } }
 import 'cypress-plugin-api'
